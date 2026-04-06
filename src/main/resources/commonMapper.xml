@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="common">
+
+	<!-- 插入系统交易日志 -->
+	<insert id="insertHsyhTransLog" parameterType="hashmap">
+		insert into hsyh_trans_log
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="serialno != null and serialno != ''">
+				serialno,
+			</if>
+			<if test="nsrmc != null and nsrmc != ''">
+				nsrmc,
+			</if>
+			<if test="nsrsbh != null and nsrsbh != ''">
+				nsrsbh,
+			</if>
+			<if test="inputtime != null and inputtime != ''">
+				inputtime,
+			</if>
+			<if test="status != null and status != ''">
+				status,
+			</if>
+			<if test="admtrsltsts != null and admtrsltsts != ''">
+				admtrsltsts,
+			</if>
+			<if test="score != null and score != ''">
+				score,
+			</if>
+			<if test="batchdate != null and batchdate != ''">
+				batchdate,
+			</if>
+			<if test="xed_type != null and xed_type != ''">
+				xed_type,
+			</if>
+			<if test="kced_type != null and kced_type != ''">
+				kced_type,
+			</if>
+			<if test="growthRate != null and growthRate != ''">
+				ratio,
+			</if>
+			<if test="saleAmount != null and saleAmount != ''">
+				saleamount,
+			</if>
+			<if test="rulecd != null and rulecd != ''">
+				rulecd
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="serialno != null and serialno != ''">
+				#{serialno},
+			</if>
+			<if test="nsrmc != null and nsrmc != ''">
+				#{nsrmc},
+			</if>
+			<if test="nsrsbh != null and nsrsbh != ''">
+				#{nsrsbh},
+			</if>
+			<if test="inputtime != null and inputtime != ''">
+				#{inputtime},
+			</if>
+			<if test="status != null and status != ''">
+				#{status},
+			</if>
+			<if test="admtrsltsts != null and admtrsltsts != ''">
+				#{admtrsltsts},
+			</if>
+			<if test="score != null and score != ''">
+				#{score},
+			</if>
+			<if test="batchdate != null and batchdate != ''">
+				#{batchdate},
+			</if>
+			<if test="xed_type != null and xed_type != ''">
+				#{xed_type},
+			</if>
+			<if test="kced_type != null and kced_type != ''">
+				#{kced_type},
+			</if>
+			<if test="growthRate != null and growthRate != ''">
+				#{growthRate},
+			</if>
+			<if test="saleAmount != null and saleAmount != ''">
+				#{saleAmount},
+			</if>
+			<if test="rulecd != null and rulecd != ''">
+				#{rulecd}
+			</if>
+		</trim>
+	</insert>
+
+	<select id="queryTodoListInfo" parameterType="hashmap" resultType="map">
+		select a.serialno   as "serialno",
+			   a.nsrmc      as "nsrmc",
+			   a.nsrsbh     as "nsrsbh",
+			   a.flag       as "flag",
+			   a.inputtime  as "inputtime",
+			   a.ifkjedai   as "ifkjedai",
+			   a.hytype     as "hytype",
+			   a.hytypecode as "hytypecode",
+			   a.xed_type       as "xed_type",
+			   a.kced_type       as "kced_type",
+			   a.xedoldcust as "xedoldcust"
+		from hsyh_qymd a
+		left join hsyh_trans_log b
+		on a.serialno = b.serialno and a.batchdate=b.batchdate
+		where flag = 'Y'  and b.serialno is null and a.batchdate >=#{yesterday} and a.xed_type='Y'
+		order by a.inputtime desc
+	</select>
+
+	<select id="queryTodoListInfo1" parameterType="hashmap" resultType="map">
+		select a.serialno   as "serialno",
+			   a.nsrmc      as "nsrmc",
+			   a.nsrsbh     as "nsrsbh",
+			   a.flag       as "flag",
+			   a.inputtime  as "inputtime",
+			   a.ifkjedai   as "ifkjedai",
+			   a.hytype     as "hytype",
+			   a.hytypecode as "hytypecode",
+			   a.xed_type       as "xed_type",
+			   a.kced_type       as "kced_type",
+			   a.xedoldcust as "xedoldcust"
+		from hsyh_qymd a
+				 left join hsyh_trans_log b
+						   on a.serialno = b.serialno and a.batchdate=b.batchdate
+		where flag = 'Y'  and b.serialno is null and a.batchdate >=#{yesterday} and a.kced_type='Y'
+		order by a.inputtime desc
+	</select>
+
+	<select id="saveExceptionInfo" parameterType="hashmap">
+		insert into hsyh_exception_info
+		values (#{serialno},#{entname},#{msg},#{inputtime})
+	</select>
+
+	<insert id="insertData" parameterType="map">
+		insert into hsyh_qymd
+		(serialno,nsrmc,nsrsbh,ifkjedai,hytype,hytypecode,xedoldcust,batchdate,inputtime,xed_type,kced_type)
+		values
+		(	#{serialno},
+			#{nsrmc},
+			#{nsrsbh},
+			#{ifkjedai},
+			#{hytype},
+			#{hytypecode},
+			#{xedoldcust},
+			#{batchdate},
+			#{inputtime},
+			#{xed_type},
+			#{kced_type}
+		)
+	</insert>
+
+	<insert id="insertData1" parameterType="map">
+		insert into hsyh_qymd
+		(serialno,nsrmc,nsrsbh,ifkjedai,hytype,hytypecode,xedoldcust,batchdate,inputtime,xed_type,kced_type)
+		select a.* from
+		(
+		<foreach collection="list" index="index" item="item" separator="union all">
+			select
+			#{item.serialno} as "serialno",
+			#{item.nsrmc} as "nsrmc",
+			#{item.nsrsbh} as "nsrsbh",
+			#{item.ifkjedai} as "ifkjedai",
+			#{item.hytype} as "hytype",
+			#{item.hytypecode} as "hytypecode",
+			#{item.xedoldcust} as "xedoldcust",
+			#{batchdate} as "batchdate",
+			#{item.inputtime} as "inputtime",
+			#{item.xed_type} as "xed_type",
+			#{item.kced_type} as "kced_type"
+			from dual
+		</foreach>
+		) a
+	</insert>
+
+	<select id="queryResultInfo" parameterType="hashmap" resultType="map">
+		select a.serialno   as "serialno",
+			   a.nsrmc      as "nsrmc",
+			   a.nsrsbh     as "nsrsbh",
+			   a.inputtime  as "inputtime",
+			   a.rulecd   	as "rulecd",
+			   a.score     as "score",
+			   a.xed_type as "xed_type",
+			   a.kced_type as "kced_type",
+			   a.ratio as "ratio",
+			   a.saleamount as "saleamount"
+		from hsyh_trans_log a
+		where batchdate = #{date}
+		order by a.inputtime desc
+	</select>
+	<select id="queryResultCount" parameterType="hashmap" resultType="int">
+		select count(1)
+		from hsyh_trans_log a
+		where batchdate = #{date}
+		order by a.inputtime desc
+	</select>
+
+	<insert id="insertHsyhDcmTransLog" parameterType="hashmap">
+		insert into hsyh_dcm_trans_log
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="serialno != null and serialno != ''">serialno,</if>
+			<if test="nsrmc != null and nsrmc != ''">nsrmc,</if>
+			<if test="nsrsbh != null and nsrsbh != ''">nsrsbh,</if>
+			<if test="incTax != null and incTax != ''">incTax,</if>
+			<if test="mainBusDownnow != null and mainBusDownnow != ''">mainBusDownnow,</if>
+			<if test="zzsNse24m != null and zzsNse24m != ''">zzsNse24m,</if>
+			<if test="zzsNse12m != null and zzsNse12m != ''">zzsNse12m,</if>
+			<if test="tax3MIllegal_unDeal != null and tax3MIllegal_unDeal != ''">tax3MIllegal_unDeal,</if>
+			<if test="befLasYearProfit != null and befLasYearProfit != ''">befLasYearProfit,</if>
+			<if test="taxStatus != null and taxStatus != ''">taxStatus,</if>
+			<if test="tax2YPro != null and tax2YPro != ''">tax2YPro,</if>
+			<if test="tax3MIllegal != null and tax3MIllegal != ''">tax3MIllegal,</if>
+			<if test="interTaxSale != null and interTaxSale != ''">interTaxSale,</if>
+			<if test="ysxse24m != null and ysxse24m != ''">ysxse24m,</if>
+			<if test="lasProfit != null and lasProfit != ''">lasProfit,</if>
+			<if test="taxSaletenper != null and taxSaletenper != ''">taxSaletenper,</if>
+			<if test="mainBusDownlast != null and mainBusDownlast != ''">mainBusDownlast,</if>
+			<if test="over24MTax != null and over24MTax != ''">over24MTax,</if>
+			<if test="YSXSRLast != null and YSXSRLast != ''">YSXSRLast,</if>
+			<if test="taxSalethirtyper != null and taxSalethirtyper != ''">taxSalethirtyper,</if>
+			<if test="taxsale3M != null and taxsale3M != ''">taxsale3M,</if>
+			<if test="over6MTax != null and over6MTax != ''">over6MTax,</if>
+			<if test="taxLev != null and taxLev != ''">taxLev,</if>
+			<if test="YSXSRBef != null and YSXSRBef != ''">YSXSRBef,</if>
+			<if test="YSXSE12M != null and YSXSE12M != ''">YSXSE12M,</if>
+			<if test="oveTax != null and oveTax != ''">oveTax,</if>
+			<if test="tax2YNetAss != null and tax2YNetAss != ''">tax2YNetAss,</if>
+			<if test="befLasYearTax != null and befLasYearTax != ''">befLasYearTax,</if>
+			<if test="lastYearTax != null and lastYearTax != ''">lastYearTax,</if>
+			<if test="inputtime != null and inputtime != ''">inputtime</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="serialno != null and serialno != ''">#{serialno},</if>
+			<if test="nsrmc != null and nsrmc != ''">#{nsrmc},</if>
+			<if test="nsrsbh != null and nsrsbh != ''">#{nsrsbh},</if>
+			<if test="incTax != null and incTax != ''">#{incTax},</if>
+			<if test="mainBusDownnow != null and mainBusDownnow != ''">#{mainBusDownnow},</if>
+			<if test="zzsNse24m != null and zzsNse24m != ''">#{zzsNse24m},</if>
+			<if test="zzsNse12m != null and zzsNse12m != ''">#{zzsNse12m},</if>
+			<if test="tax3MIllegal_unDeal != null and tax3MIllegal_unDeal != ''">#{tax3MIllegal_unDeal},</if>
+			<if test="befLasYearProfit != null and befLasYearProfit != ''">#{befLasYearProfit},</if>
+			<if test="taxStatus != null and taxStatus != ''">#{taxStatus},</if>
+			<if test="tax2YPro != null and tax2YPro != ''">#{tax2YPro},</if>
+			<if test="tax3MIllegal != null and tax3MIllegal != ''">#{tax3MIllegal},</if>
+			<if test="interTaxSale != null and interTaxSale != ''">#{interTaxSale},</if>
+			<if test="ysxse24m != null and ysxse24m != ''">#{ysxse24m},</if>
+			<if test="lasProfit != null and lasProfit != ''">#{lasProfit},</if>
+			<if test="taxSaletenper != null and taxSaletenper != ''">#{taxSaletenper},</if>
+			<if test="mainBusDownlast != null and mainBusDownlast != ''">#{mainBusDownlast},</if>
+			<if test="over24MTax != null and over24MTax != ''">#{over24MTax},</if>
+			<if test="YSXSRLast != null and YSXSRLast != ''">#{YSXSRLast},</if>
+			<if test="taxSalethirtyper != null and taxSalethirtyper != ''">#{taxSalethirtyper},</if>
+			<if test="taxsale3M != null and taxsale3M != ''">#{taxsale3M},</if>
+			<if test="over6MTax != null and over6MTax != ''">#{over6MTax},</if>
+			<if test="taxLev != null and taxLev != ''">#{taxLev},</if>
+			<if test="YSXSRBef != null and YSXSRBef != ''">#{YSXSRBef},</if>
+			<if test="YSXSE12M != null and YSXSE12M != ''">#{YSXSE12M},</if>
+			<if test="oveTax != null and oveTax != ''">#{oveTax},</if>
+			<if test="tax2YNetAss != null and tax2YNetAss != ''">#{tax2YNetAss},</if>
+			<if test="befLasYearTax != null and befLasYearTax != ''">#{befLasYearTax},</if>
+			<if test="lastYearTax != null and lastYearTax != ''">#{lastYearTax},</if>
+			<if test="inputtime != null and inputtime != ''">#{inputtime}</if>
+		</trim>
+	</insert>
+
+</mapper>
