@@ -2,8 +2,13 @@ package com.ahzx.utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
+/**
+ * @author think
+ */
 public class CommUtils {
 	public static String YYYYMMDD = "yyyyMMdd";
 	public static String HHMMSS = "HHmmss";
@@ -20,13 +25,27 @@ public class CommUtils {
 		return sdf.format(date);
 	}
 	
+
 	public static String getFormatMillis() {
 		Date date = new Date(System.currentTimeMillis());
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
 		return sdf.format(date);
 	}
-	
-	
+
+
+	/**
+	 * 计算两个日期之间的天数(算头不算尾)
+	 * @param startDate 开始日期
+	 * @param endDate 结束日期
+	 * @return 两个日期之间的天数
+	 */
+	public static int daysBetween(String startDate, String endDate) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		long startTime =java.sql.Date.valueOf(LocalDate.parse(startDate, formatter)).getTime();
+		long endTime = java.sql.Date.valueOf(LocalDate.parse(endDate, formatter)).getTime();
+		long betweenDays = (endTime - startTime) / (1000 * 3600 * 24);
+		return (int) betweenDays;
+	}
 	public static String getDate(int i) {
 		Calendar calendar = Calendar.getInstance();
 		Date date = new Date(System.currentTimeMillis());
@@ -330,62 +349,6 @@ public class CommUtils {
 		return (now.get(Calendar.YEAR)-start.get(Calendar.YEAR))*12+now.get(Calendar.MONTH)-start.get(Calendar.MONTH);
 	}
 
-	
-	/**
-	 * 最大逾期计算
-	 * @return 最大的数字
-	 */
-	public static int getMaxChar(String str) {
-		int max = 0;
-		if(isEmptyStr(str)) return max;
-		char[] loanOverDueArray = str.toCharArray();
-		for (char c : loanOverDueArray) {
-			String cString = String.valueOf(c);
-			if(cString.matches("^[1-9]$")){
-				max = Math.max(Integer.parseInt(cString), max);
-			}
-		}
-		return max;
-	}
-	
-	/**
-	 * 多条记录最大逾期期数
-	 */
-	public static int getMaxChar(List<String> strs) {
-		int max = 0;
-		for (String string : strs) {
-			int maxstr = getMaxChar(string);
-			max = Math.max(maxstr, max);
-		}
-		return max;
-	}
-	
-	/**
-	 * 累计逾期次数计算
-	 * @return 累计次数
-	 */
-	public static int getOverCount(String str){
-		int count = 0;
-		if(isEmptyStr(str)) return count;
-		char[] loanOverDueArray = str.toCharArray();
-		for (char c : loanOverDueArray) {
-			String cString = String.valueOf(c);
-			if(cString.matches("^[1-9]$")){
-				count++;
-			}
-		}
-		return count;
-	}
-	/**
-	 * 多条记录逾期总次数
-	 */
-	public static int getOverCount(List<String> strs){
-		int count = 0;
-		for (String string : strs) {
-			count = count + getOverCount(string);
-		}
-		return count;
-	}
 
 	/**
 	 * 判断两个月份相差几个月，日期格式为yyyyMMdd
@@ -404,23 +367,6 @@ public class CommUtils {
 				e.printStackTrace();
 			}
 		return 0;
-	}
-    /**
-     * 判断数组中连续的0的个数是否大于等于times
-     */
-	public static Boolean ArrayISContinuationTimes(int[] array,int times){
-		int count=0;
-		for (int j : array) {
-			if (j == 0) {
-				count++;
-				if (count >= times) {
-					return true;
-				}
-			} else {
-				count = 0;
-			}
-		}
-		return false;
 	}
 
 	public static String getEaryMonth(int i) {
