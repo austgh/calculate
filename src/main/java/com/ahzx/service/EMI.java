@@ -13,13 +13,6 @@ import java.math.BigDecimal;
  * 例句：The loan is repaid on an EMI basis. （这笔贷款采用等额本息方式偿还。）
  */
 public class EMI {
-    //首期应还本金
-    double firstPrincipalDue;
-
-    //首期利息
-    double firstInterest;
-    //月供
-    double monthlyPayment;
 
     /*
      *
@@ -30,16 +23,17 @@ public class EMI {
      * @param amount 贷款本金
      * @return double
      */
-    public static double PMT(double ratio, int total, int amount) {
-        return amount * ratio * Math.pow(1 + ratio, total) / (Math.pow(1 + ratio, total) - 1);
+    public static BigDecimal PMT(double ratio, int total, int amount) {
+        return new BigDecimal(amount * ratio * Math.pow(1 + ratio, total) / (Math.pow(1 + ratio, total) - 1)).setScale(2,6);
     }
 
     //    2018年1月15日发放贷款1W，期限3个月，默认还款日为21日，年利率12%，偿还方式为等额本息
     public static void main(String[] args) {
         //月供
-        BigDecimal monthlyPayment = new BigDecimal(PMT(0.12 / 12, 3, 10000)).setScale(2, 6);
+        BigDecimal monthlyPayment = PMT(0.12 / 12, 3, 10000);
         //首期利息
         BigDecimal firstInterest = new BigDecimal(10000 * 0.12 / 12 + 10000 * 0.12 / 360 * (21 - 15));
+        System.out.println("首期利息" + firstInterest);
         //整周期利息
         BigDecimal fullPeriodInterest = new BigDecimal(10000 * 0.12 / 12);
         //首期应还本金
@@ -71,7 +65,8 @@ public class EMI {
         System.out.println("期末月供" + thirdMonthlyPayment);
 
         //等额本息 头尾 单算  其他的月供不变
-        BigDecimal totalPayment = monthlyPayment.multiply(new BigDecimal(3)).setScale(2, 6);
+        BigDecimal totalPayment = firstMonthlyPayment.add(secondMonthlyPayment).add(thirdMonthlyPayment).setScale(2, 6);
+                //monthlyPayment.multiply(new BigDecimal(3)).setScale(2, 6);
         System.out.println("总还款金额" + totalPayment);
         BigDecimal totalInterest = totalPayment.subtract(new BigDecimal(10000));
         System.out.println("总利息" + totalInterest);
