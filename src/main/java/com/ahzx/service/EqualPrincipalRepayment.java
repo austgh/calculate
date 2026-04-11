@@ -10,7 +10,6 @@ import java.util.List;
 /**
  * @author think
  * @date 2026年04月09日 23:12
- *
  *  等额本金还款计算器
  *  规则：
  *  - 次月还款，放款日对日（或指定每月固定还款日）
@@ -144,29 +143,30 @@ public class EqualPrincipalRepayment {
 
             // 计算利息
             BigDecimal interest;
-            if (isLast) {
-                // 末期：按实际天数计息（从上期还款日到到期日）
-                long days = ChronoUnit.DAYS.between(prevDueDate, dueDate);
-                interest = remaining.multiply(annualRate)
-                        .multiply(BigDecimal.valueOf(days))
+            LocalDate wholeMonthEnd = prevDueDate.plusMonths(1);
+
+            // 末期：按实际天数计息（从上期还款日到到期日）
+            //有漏洞  首期和末期都有可能为小于个月 或者超出一个月 如果小于一个月就按照天数计算 如果超出一个月 则按照整月+超出天数算 算头不算尾
+
+            if (dueDate.isAfter(wholeMonthEnd)) {
+                // 超出一个整月：整月利息 + 零头天利息
+                long extraDays = ChronoUnit.DAYS.between(wholeMonthEnd, dueDate);
+                BigDecimal wholeMonthInterest = remaining.multiply(annualRate)
+                        .divide(BigDecimal.valueOf(12), 2, RoundingMode.HALF_UP);
+                BigDecimal extraInterest = remaining.multiply(annualRate)
+                        .multiply(BigDecimal.valueOf(extraDays))
                         .divide(BigDecimal.valueOf(360), 2, RoundingMode.HALF_UP);
+                interest = wholeMonthInterest.add(extraInterest);
+            } else if (dueDate.isBefore(wholeMonthEnd)) {
+                //少于一个整月：按照天数计算
+                long days = ChronoUnit.DAYS.between(prevDueDate, dueDate);
+                interest = remaining.multiply(annualRate).multiply(BigDecimal.valueOf(days))
+                        .divide(BigDecimal.valueOf(360), 2, RoundingMode.HALF_UP);
+
             } else {
-                // 非末期：判断是否为一个整月 + 可能的零头天（当还款日 > 放款日+整月时）
-                LocalDate wholeMonthEnd = prevDueDate.plusMonths(1);
-                if (dueDate.isAfter(wholeMonthEnd)) {
-                    // 超出一个整月：整月利息 + 零头天利息
-                    long extraDays = ChronoUnit.DAYS.between(wholeMonthEnd, dueDate);
-                    BigDecimal wholeMonthInterest = remaining.multiply(annualRate)
-                            .divide(BigDecimal.valueOf(12), 2, RoundingMode.HALF_UP);
-                    BigDecimal extraInterest = remaining.multiply(annualRate)
-                            .multiply(BigDecimal.valueOf(extraDays))
-                            .divide(BigDecimal.valueOf(360), 2, RoundingMode.HALF_UP);
-                    interest = wholeMonthInterest.add(extraInterest);
-                } else {
-                    // 整月（对日或提前，一般是对日）
-                    interest = remaining.multiply(annualRate)
-                            .divide(BigDecimal.valueOf(12), 2, RoundingMode.HALF_UP);
-                }
+                // 整月（对日或提前，一般是对日）
+                interest = remaining.multiply(annualRate)
+                        .divide(BigDecimal.valueOf(12), 2, RoundingMode.HALF_UP);
             }
 
             BigDecimal total = currPrincipal.add(interest);
@@ -185,27 +185,15 @@ public class EqualPrincipalRepayment {
         BigDecimal principal = new BigDecimal("10000");
         BigDecimal annualRate = new BigDecimal("0.12");
         int months = 3;
-        LocalDate loanDate = LocalDate.of(2018, 1, 15);
+        LocalDate loanDate = LocalDate.of(2018, 1, 28);
 
         // 使用固定还款日21日策略（最后一期自动为到期日4月15日）
-        FixedDayOfMonthStrategy strategy = new FixedDayOfMonthStrategy(21);
+        FixedDayOfMonthStrategy strategy = new FixedDayOfMonthStrategy(31);
         List<RepaymentRecord> records = compute(principal, annualRate, months, loanDate, strategy);
 
-        System.out.println("=== 等额本金还款计划（固定还款日21日，匹配示例）===");
+        System.out.println("=== 等额本金还款计划（固定还款日"+strategy.dayOfMonth+"日，匹配示例）===");
         for (RepaymentRecord record : records) {
             System.out.println(record);
         }
-
-        // 验证示例中的数值
-        // 首期：2018-02-21，应还本金3333.33，整月利息100 + 零头天利息20 = 120，月供3453.33
-        // 第二期：2018-03-21，剩余6666.67，整月利息66.67，月供3400.00
-        // 末期：2018-04-15，剩余3333.34，计息25天利息27.78，月供3361.12
-        System.out.println("\n--- 数值验证 ---");
-        RepaymentRecord r1 = records.get(0);
-        System.out.printf("首期月供: %.2f (期望3453.33)%n", r1.total);
-        RepaymentRecord r2 = records.get(1);
-        System.out.printf("第二期月供: %.2f (期望3400.00)%n", r2.total);
-        RepaymentRecord r3 = records.get(2);
-        System.out.printf("末期月供: %.2f (期望3361.12)%n", r3.total);
     }
 }

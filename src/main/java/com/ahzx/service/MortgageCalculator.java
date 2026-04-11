@@ -60,48 +60,18 @@ public class MortgageCalculator {
         BigDecimal fullPeriodInterest = remainingPrincipal.multiply(monthlyRate).setScale(2,6);
         System.out.println(fullPeriodInterest);
         BigDecimal firstInterest = BigDecimal.ZERO;
-        //首期利息要根据实际天数算 算头不算晚 先判断是否超过整月 如果超过整月的部分按照整月算 多出的部分按照天算 如果没有超过整月的按照天数算
+        //首期利息要根据实际天数算 算头不算尾 先判断是否超过整月 如果超过整月的部分按照整月算 多出的部分按照天算 如果没有超过整月的按照天数算
         if (paymentDate.getDayOfMonth() >= fundingDate) {
             BigDecimal overInterest =
                     remainingPrincipal.multiply(annualRate).multiply(new BigDecimal(paymentDate.getDayOfMonth() - fundingDate)).divide(new BigDecimal(360),2,6).setScale(2,6);
 
             firstInterest = fullPeriodInterest.add(overInterest);
             System.out.println(firstInterest);
-
-
-
-            //首期应还本金
-            //BigDecimal firstInstallmentPrincipal = monthlyPayment.subtract(fullPeriodInterest).setScale(2, 6);
-            ////首期月供
-            //BigDecimal firstMonthlyPayment = firstInstallmentPrincipal.add(firstInterest);
-            //System.out.println("首期月供" + firstMonthlyPayment);
-            //
-            ////剩余本金
-            //remainingPrincipal = principal.subtract(firstInstallmentPrincipal);
-            //System.out.println("剩余本金" + remainingPrincipal);
-            //
-            //totalInterest = totalInterest.add(firstInterest);
-            //schedule.add(new RepaymentRecord(1, paymentDate, firstMonthlyPayment, firstInterest, firstInstallmentPrincipal, remainingPrincipal));
-            //paymentDate = paymentDate.plusMonths(1);
         }else{
             long days = ChronoUnit.DAYS.between(loanStartDate, paymentDate);
             System.out.println("fundingDate-paymentDate.getDayOfMonth()"+days);
             firstInterest =
                     remainingPrincipal.multiply(annualRate).multiply(new BigDecimal(days)).divide(new BigDecimal(360),2,6);
-            //BigDecimal fullPeriodInterest = remainingPrincipal.multiply(monthlyRate).setScale(2,6);
-            //totalInterest = totalInterest.add(firstInterest);
-            //BigDecimal fullPeriodInterest = remainingPrincipal.multiply(monthlyRate).setScale(2,6);
-            ////首期应还本金
-            //BigDecimal firstInstallmentPrincipal = monthlyPayment.subtract(fullPeriodInterest).setScale(2, 6);
-            ////首期月供
-            //BigDecimal firstMonthlyPayment = firstInstallmentPrincipal.add(firstInterest);
-            //System.out.println("首期月供" + firstMonthlyPayment);
-            //
-            ////剩余本金
-            //remainingPrincipal = principal.subtract(firstInstallmentPrincipal);
-            //System.out.println("剩余本金" + remainingPrincipal);
-            //schedule.add(new RepaymentRecord(1, paymentDate, firstMonthlyPayment, firstInterest, firstInstallmentPrincipal, remainingPrincipal));
-            //paymentDate = paymentDate.plusMonths(1);
         }
 
         //首期应还本金
