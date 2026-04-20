@@ -182,18 +182,21 @@ public class EqualPrincipalRepayment {
 
     // 示例测试（匹配您提供的示例：1月15日放款，期限3个月，年利率12%，固定还款日21日）
     public static void main(String[] args) {
-        BigDecimal principal = new BigDecimal("10000");
-        BigDecimal annualRate = new BigDecimal("0.12");
-        int months = 3;
-        LocalDate loanDate = LocalDate.of(2018, 1, 28);
+        BigDecimal principal = new BigDecimal("500000");
+        BigDecimal annualRate = new BigDecimal("0.021");
+        int months = 60;
+        LocalDate loanDate = LocalDate.of(2026, 10, 15);
 
         // 使用固定还款日21日策略（最后一期自动为到期日4月15日）
-        FixedDayOfMonthStrategy strategy = new FixedDayOfMonthStrategy(31);
+        FixedDayOfMonthStrategy strategy = new FixedDayOfMonthStrategy(15);
         List<RepaymentRecord> records = compute(principal, annualRate, months, loanDate, strategy);
 
         System.out.println("=== 等额本金还款计划（固定还款日"+strategy.dayOfMonth+"日，匹配示例）===");
+        BigDecimal interest1 = BigDecimal.ZERO;
         for (RepaymentRecord record : records) {
             System.out.println(record);
+            interest1=interest1.add(record.interest);
         }
+        System.out.println("总还款金额："+interest1);
     }
 }
