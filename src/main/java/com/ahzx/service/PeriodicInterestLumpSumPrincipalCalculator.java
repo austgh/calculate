@@ -246,19 +246,16 @@ public class PeriodicInterestLumpSumPrincipalCalculator {
     // ===================== 示例运行 =====================
     public static void main(String[] args) {
         // 示例1：贷款1万元，期限3个月，默认还款日21日，年利率12%
-        BigDecimal principal = new BigDecimal("10000");
+        BigDecimal principal = new BigDecimal("3000000");
         double annualRate = 12.0;
-        LocalDate loanDate = LocalDate.of(2018, 1, 15);
-        int termMonths = 3;
-        int periodMonths = 1;          // 月周期（非固定）
-        boolean isFixedPeriod = false;  // 非固定季/半年/年
+        LocalDate loanDate = LocalDate.of(2018, 3, 25);
+        int termMonths = 12;
+        int periodMonths = 3;          // 月周期（非固定）
+        boolean isFixedPeriod = true;  // 非固定季/半年/年
         int repaymentDay = 21;          // 示例中的21号
 
         CalculationResult result = calculate(principal, annualRate, loanDate, termMonths,
                 periodMonths, isFixedPeriod, repaymentDay);
         result.printSchedule();
-
-        System.out.println("\n注：上述结果严格按照文档规则计算（首期还款日为当月21日，但示例中为2月21日，存在差异）。");
-        System.out.println("如需复现示例结果，请将首期还款日规则调整为“放款日之后第一个默认还款日”。");
     }
 }
