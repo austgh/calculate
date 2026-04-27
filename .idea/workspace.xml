@@ -7,9 +7,9 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="97969e49-23d2-4be7-b4e7-4576432e63bb" name="Changes" comment="1">
+    <list default="true" id="97969e49-23d2-4be7-b4e7-4576432e63bb" name="Changes" comment="修改测试">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/ahzx/service/PeriodicInterestLumpSumPrincipalCalculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/ahzx/service/PeriodicInterestLumpSumPrincipalCalculator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/ahzx/service/IrregularRepaymentCalculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/ahzx/service/IrregularRepaymentCalculator.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/软件说明书【核算】_new.doc" beforeDir="false" afterPath="$PROJECT_DIR$/软件说明书【核算】_new.doc" afterDir="false" />
     </list>
     <list id="add2c137-ee80-4289-a2ba-db7d4e198adb" name="ignore changelist" comment="优化等额本息代码" />
@@ -166,7 +166,7 @@
     &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.37166512&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;org.jetbrains.plugins.github.ui.GithubSettingsConfigurable&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;File.Encoding&quot;,
     &quot;spring.configuration.checksum&quot;: &quot;83de10d61a0236cde7e8487869f865a6&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
@@ -238,7 +238,7 @@
       </set>
     </option>
   </component>
-  <component name="RunManager" selected="Application.PeriodicInterestLumpSumPrincipalCalculator">
+  <component name="RunManager" selected="Application.IrregularRepaymentCalculator1">
     <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
       <option name="arquillianRunConfiguration">
         <value>
@@ -289,8 +289,8 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="LumpSumRepaymentCalculator" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.ahzx.service.LumpSumRepaymentCalculator" />
+    <configuration name="IrregularRepaymentCalculator" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.ahzx.service.IrregularRepaymentCalculator" />
       <module name="nmCalculate" />
       <extension name="coverage">
         <pattern>
@@ -413,20 +413,20 @@
       <method v="2" />
     </configuration>
     <list>
+      <item itemvalue="Application.IrregularRepaymentCalculator1" />
       <item itemvalue="Application.EqualPrincipalRepayment" />
       <item itemvalue="Application.InstallmentInterestPrincipalCalculator" />
       <item itemvalue="Application.IrregularRepaymentCalculator" />
-      <item itemvalue="Application.LumpSumRepaymentCalculator" />
       <item itemvalue="Application.PeriodicInterestLumpSumPrincipalCalculator" />
       <item itemvalue="Spring Boot.CalculateApplication" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.IrregularRepaymentCalculator1" />
+        <item itemvalue="Application.IrregularRepaymentCalculator" />
         <item itemvalue="Application.PeriodicInterestLumpSumPrincipalCalculator" />
         <item itemvalue="Application.EqualPrincipalRepayment" />
         <item itemvalue="Application.InstallmentInterestPrincipalCalculator" />
-        <item itemvalue="Application.IrregularRepaymentCalculator" />
-        <item itemvalue="Application.LumpSumRepaymentCalculator" />
       </list>
     </recent_temporary>
   </component>
@@ -639,7 +639,9 @@
       <workItem from="1776408342762" duration="7150000" />
       <workItem from="1776666590692" duration="1818000" />
       <workItem from="1776669997249" duration="10819000" />
-      <workItem from="1776945103481" duration="4848000" />
+      <workItem from="1776945103481" duration="6666000" />
+      <workItem from="1777107422682" duration="71000" />
+      <workItem from="1777253373704" duration="2353000" />
     </task>
     <task id="LOCAL-00002" summary="1">
       <created>1646876087305</created>
@@ -858,14 +860,6 @@
       <option name="project" value="LOCAL" />
       <updated>1693643246476</updated>
     </task>
-    <task id="LOCAL-00067" summary="1">
-      <option name="closed" value="true" />
-      <created>1770338842333</created>
-      <option name="number" value="00067" />
-      <option name="presentableId" value="LOCAL-00067" />
-      <option name="project" value="LOCAL" />
-      <updated>1770338842333</updated>
-    </task>
     <task id="LOCAL-00068" summary="修改字段名称">
       <option name="closed" value="true" />
       <created>1770687117978</created>
@@ -1001,7 +995,15 @@
       <option name="project" value="LOCAL" />
       <updated>1776677009744</updated>
     </task>
-    <option name="localTasksCounter" value="85" />
+    <task id="LOCAL-00085" summary="修改测试">
+      <option name="closed" value="true" />
+      <created>1777013960170</created>
+      <option name="number" value="00085" />
+      <option name="presentableId" value="LOCAL-00085" />
+      <option name="project" value="LOCAL" />
+      <updated>1777013960170</updated>
+    </task>
+    <option name="localTasksCounter" value="86" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1072,7 +1074,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="科创300分" />
     <MESSAGE value="修复除法报错、设置精度" />
     <MESSAGE value="提交prd测试配置" />
     <MESSAGE value="优化性能 分成两个文件" />
@@ -1097,7 +1098,8 @@
     <MESSAGE value="不规则还款方式  有问题" />
     <MESSAGE value="优化等额本金测试案例" />
     <MESSAGE value="1" />
-    <option name="LAST_COMMIT_MESSAGE" value="1" />
+    <MESSAGE value="修改测试" />
+    <option name="LAST_COMMIT_MESSAGE" value="修改测试" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1320,6 +1322,15 @@
             <option name="WATCH_EXIT" value="false" />
           </properties>
           <option name="timeStamp" value="110" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-method">
+          <url>file://$PROJECT_DIR$/src/main/java/com/ahzx/service/IrregularRepaymentCalculator.java</url>
+          <line>400</line>
+          <properties class="com.ahzx.service.IrregularRepaymentCalculator" method="main">
+            <option name="EMULATED" value="true" />
+            <option name="WATCH_EXIT" value="false" />
+          </properties>
+          <option name="timeStamp" value="111" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
